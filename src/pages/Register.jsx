@@ -1,61 +1,99 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
-  const [gender, setGender] = useState("Male");
-
-  const handleGenderSelect = (selectedGender) => {
-    setGender(selectedGender);
+  const Gender = {
+    MALE: "MALE",
+    FEMALE: "FEMALE",
   };
-
+  const [gender, setGender] = useState(Gender.MALE);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    console.log("submit");
+    e.preventDefault();
+    const formData = { firstName, lastName, email, password, gender };
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/register",
+        formData
+      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-start mb-16 pt-32">
       <h1 className="text-3xl font-bold text-gray-900 mb-6">
         Create your account
       </h1>
-      <form className="flex flex-col gap-4 mt-4 w-80">
+      <form className="flex flex-col gap-4 mt-4 w-80" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="First Name"
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
+          onChange={(e) => setFirstName(e.target.value)}
         />
         <input
           type="text"
           placeholder="Last Name"
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
+          onChange={(e) => setLastName(e.target.value)}
         />
         <input
           type="text"
           placeholder="Email"
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
+          onChange={(e) => setEmail(e.target.value)}
         />
         <input
           type="password"
           placeholder="Password"
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
+          onChange={(e) => setPassword(e.target.value)}
         />
 
         <div className="flex justify-around gap-4">
           <button
             type="button"
-            onClick={() => handleGenderSelect("Male")}
+            onClick={() => {
+              setGender(Gender.MALE);
+            }}
             className={`text-lg ${
-              gender === "Male" ? "text-gray-900 font-bold" : "text-gray-500"
+              gender === Gender.MALE
+                ? "text-gray-900 font-bold"
+                : "text-gray-500"
             }`}
           >
             Male
           </button>
           <button
             type="button"
-            onClick={() => handleGenderSelect("Female")}
+            onClick={() => {
+              setGender(Gender.FEMALE);
+            }}
             className={`text-lg duration-150 ${
-              gender === "Female" ? "text-gray-900 font-bold" : "text-gray-500"
+              gender === Gender.FEMALE
+                ? "text-gray-900 font-bold"
+                : "text-gray-500"
             }`}
           >
             Female
           </button>
         </div>
 
-        <button className="text-gray-100 bg-slate-800 p-2 rounded-lg hover:rounded-xl hover:bg-slate-700 duration-500">
+        <button
+          type="submit"
+          className="text-gray-100 bg-slate-800 p-2 rounded-lg hover:rounded-xl hover:bg-slate-700 duration-500"
+        >
           Register
         </button>
         <div className="flex flex-col items-center justify-center mt-4 w-80">
