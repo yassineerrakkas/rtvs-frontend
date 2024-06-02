@@ -1,24 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/auth/authenticate",
+        {
+          email,
+          password,
+        }
+      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+      setEmail("");
+      setPassword("");
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome back</h1>
-      <form className="flex flex-col gap-4 mt-4 w-80">
+      <form className="flex flex-col gap-4 mt-4 w-80" onSubmit={handleSubmit}>
         <input
           type="text"
           placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
         />
         <input
           type="password"
           placeholder="Password"
           className="p-2 border-2 border-gray-300 rounded-lg h-14"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <p className="text-slate-800 hover:text-slate-400 duration-200 cursor-pointer">
           Forgot password?
         </p>
-        <button className="text-gray-100 bg-slate-800 p-2 rounded-lg hover:rounded-xl hover:bg-slate-700 duration-500">
+        <button
+          type="submit"
+          className="text-gray-100 bg-slate-800 p-2 rounded-lg hover:rounded-xl hover:bg-slate-700 duration-500"
+        >
           Login
         </button>
         <p className="flex items-center justify-center gap-1">
