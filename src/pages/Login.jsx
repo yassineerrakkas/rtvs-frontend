@@ -1,26 +1,25 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
         "http://localhost:8080/api/v1/auth/authenticate",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
+        onLogin(response.data.token);
+        navigate("/");
       }
       setEmail("");
       setPassword("");
-      setIsLoggedIn(true);
     } catch (error) {
       console.log(error);
     }

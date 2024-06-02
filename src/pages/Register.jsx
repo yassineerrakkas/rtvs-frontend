@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const Register = ({ onLogin }) => {
   const Gender = {
     MALE: "MALE",
     FEMALE: "FEMALE",
@@ -23,7 +23,7 @@ const Register = () => {
         formData
       );
       if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
+        onLogin(response.data.token);
         navigate("/");
       }
     } catch (error) {
