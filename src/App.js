@@ -8,10 +8,11 @@ import Register from "./pages/Register";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="bg-slate-100">
+    <div className="bg-slate-100 ">
       <Router>
         <Header />
         <Routes>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/about" element={<About />} />
         </Routes>
+        <Footer />
       </Router>
     </div>
   );
